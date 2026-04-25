@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stockora AD</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1280px;height:720px;overflow:hidden;background:#000;}
+
+/* ── SCENE SYSTEM ── */
+.scene{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.6s ease;
+}
+.scene.active{opacity:1;pointer-events:all;}
+
+/* ══════════════════════════════
+   SCENE 1 — CINEMATIC INTRO
+══════════════════════════════ */
+#s1{background:#060818;}
+.s1-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 60%, rgba(59,130,246,0.15) 0%, transparent 70%);
+}
+.s1-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.06) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation:gridPulse 4s ease-in-out infinite;
+}
+@keyframes gridPulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+.s1-center{position:relative;text-align:center;z-index:2;}
+
+.s1-logo-wrap{
+  width:100px;height:100px;
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  border-radius:28px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;
+  margin:0 auto 32px;
+  box-shadow:0 0 60px rgba(59,130,246,0.5), 0 0 120px rgba(16,185,129,0.2);
+  animation:logoFloat 3s ease-in-out infinite, logoPop 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+}
+@keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes logoPop{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+
+.s1-title{
+  font-family:'Syne',sans-serif;
+  font-size:80px;font-weight:800;
+  color:#fff;letter-spacing:-2px;
+  line-height:1;
+  animation:titleSlide 0.9s cubic-bezier(0.22,1,0.36,1) 0.7s both;
+}
+@keyframes titleSlide{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.s1-title span{
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.s1-sub{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:20px;font-weight:500;
+  color:rgba(255,255,255,0.5);
+  letter-spacing:6px;text-transform:uppercase;
+  margin-top:16px;
+  animation:titleSlide 0.9s cubic-bezier(0.22,1,0.36,1) 1s both;
+}
+
+.s1-tagline{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:16px;color:rgba(255,255,255,0.3);
+  margin-top:40px;
+  animation:titleSlide 0.9s cubic-bezier(0.22,1,0.36,1) 1.3s both;
+}
+
+/* Orbiting dots */
+.orbit{
+  position:absolute;
+  width:400px;height:400px;
+  border:1px solid rgba(59,130,246,0.15);
+  border-radius:50%;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  animation:spin 8s linear infinite;
+}
+.orbit2{
+  width:600px;height:600px;
+  border-color:rgba(16,185,129,0.1);
+  animation:spin 12s linear infinite reverse;
+}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.orbit-dot{
+  position:absolute;top:-5px;left:50%;
+  width:10px;height:10px;
+  background:#3b82f6;border-radius:50%;
+  transform:translateX(-50%);
+  box-shadow:0 0 12px #3b82f6;
+}
+.orbit2 .orbit-dot{background:#10b981;box-shadow:0 0 12px #10b981;}
+
+/* ══════════════════════════════
+   SCENE 2 — PROBLEM STATEMENT
+══════════════════════════════ */
+#s2{background:#080b14;}
+.s2-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 20% 50%, rgba(239,68,68,0.08) 0%, transparent 60%);
+}
+.s2-content{position:relative;z-index:2;max-width:900px;text-align:center;}
+.s2-badge{
+  display:inline-block;
+  background:rgba(239,68,68,0.1);
+  border:1px solid rgba(239,68,68,0.3);
+  color:#ef4444;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;
+  padding:8px 20px;border-radius:100px;
+  margin-bottom:32px;
+  animation:fadeUp 0.7s ease 0.2s both;
+}
+.s2-heading{
+  font-family:'Syne',sans-serif;
+  font-size:56px;font-weight:800;
+  color:#fff;line-height:1.1;
+  animation:fadeUp 0.7s ease 0.4s both;
+}
+.s2-heading .red{color:#ef4444;}
+.s2-problems{
+  display:flex;gap:20px;justify-content:center;
+  margin-top:48px;flex-wrap:wrap;
+}
+.s2-prob{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;padding:24px 28px;
+  text-align:left;min-width:220px;
+  animation:fadeUp 0.7s ease both;
+}
+.s2-prob:nth-child(1){animation-delay:0.6s}
+.s2-prob:nth-child(2){animation-delay:0.75s}
+.s2-prob:nth-child(3){animation-delay:0.9s}
+.prob-icon{font-size:28px;margin-bottom:12px;}
+.prob-text{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.prob-text strong{color:#fff;display:block;font-size:16px;margin-bottom:4px;}
+
+@keyframes fadeUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ══════════════════════════════
+   SCENE 3 — DASHBOARD MOCKUP
+══════════════════════════════ */
+#s3{background:#060818;}
+.s3-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 70% 50%, rgba(59,130,246,0.1) 0%, transparent 60%);
+}
+.s3-left{
+  position:relative;z-index:2;
+  flex:0 0 420px;padding-right:40px;
+}
+.s3-label{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--accent,#3b82f6);
+  margin-bottom:16px;
+  animation:fadeUp 0.6s ease 0.2s both;
+}
+.s3-heading{
+  font-family:'Syne',sans-serif;
+  font-size:48px;font-weight:800;color:#fff;line-height:1.1;
+  animation:fadeUp 0.6s ease 0.35s both;
+}
+.s3-heading .grad{
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.s3-features{margin-top:32px;}
+.s3-feat{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:16px;
+  animation:fadeUp 0.6s ease both;
+}
+.s3-feat:nth-child(1){animation-delay:0.5s}
+.s3-feat:nth-child(2){animation-delay:0.65s}
+.s3-feat:nth-child(3){animation-delay:0.8s}
+.s3-feat:nth-child(4){animation-delay:0.95s}
+.feat-dot{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.feat-dot.blue{background:rgba(59,130,246,0.15);}
+.feat-dot.green{background:rgba(16,185,129,0.15);}
+.feat-dot.orange{background:rgba(245,158,11,0.15);}
+.feat-dot.purple{background:rgba(168,85,247,0.15);}
+.feat-text{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:rgba(255,255,255,0.75);}
+.feat-text strong{color:#fff;}
+
+/* Dashboard mockup */
+.s3-mockup{
+  position:relative;z-index:2;
+  flex:0 0 700px;
+  animation:mockupSlide 0.9s cubic-bezier(0.22,1,0.36,1) 0.3s both;
+}
+@keyframes mockupSlide{from{transform:translateX(60px) perspective(1000px) rotateY(-8deg);opacity:0}to{transform:translateX(0) perspective(1000px) rotateY(-4deg);opacity:1}}
+.mock-window{
+  background:#1e293b;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+}
+.mock-titlebar{
+  background:#0f172a;
+  padding:12px 16px;
+  display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.mock-dot{width:12px;height:12px;border-radius:50%;}
+.mock-dot.r{background:#ef4444;} .mock-dot.y{background:#f59e0b;} .mock-dot.g{background:#10b981;}
+.mock-url{
+  flex:1;margin:0 12px;
+  background:rgba(255,255,255,0.05);border-radius:6px;
+  padding:5px 12px;font-family:monospace;font-size:11px;color:rgba(255,255,255,0.3);
+}
+.mock-body{display:flex;height:320px;}
+.mock-sidebar{
+  width:130px;background:#0f172a;
+  border-right:1px solid rgba(255,255,255,0.06);
+  padding:12px 8px;
+}
+.mock-logo{
+  display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:0 4px;
+}
+.mock-logo-icon{
+  width:26px;height:26px;border-radius:7px;
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+}
+.mock-logo-text{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#f1f5f9;}
+.mock-nav{display:flex;flex-direction:column;gap:3px;}
+.mock-nav-item{
+  padding:7px 8px;border-radius:6px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;color:rgba(255,255,255,0.35);
+  display:flex;align-items:center;gap:6px;
+}
+.mock-nav-item.active{background:rgba(59,130,246,0.15);color:#60a5fa;font-weight:600;}
+.mock-main{flex:1;padding:14px;background:#0a0f1a;overflow:hidden;}
+.mock-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.mock-stat{
+  background:#1e293b;border-radius:8px;padding:10px;
+  border-top:2px solid;
+}
+.mock-stat.b{border-color:#3b82f6;}
+.mock-stat.g{border-color:#10b981;}
+.mock-stat.o{border-color:#f59e0b;}
+.mock-stat.r{border-color:#ef4444;}
+.mock-stat-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#f1f5f9;}
+.mock-stat-lbl{font-size:8px;color:rgba(255,255,255,0.35);margin-top:3px;font-family:'Plus Jakarta Sans',sans-serif;}
+.mock-chart-area{background:#1e293b;border-radius:8px;padding:12px;height:140px;position:relative;overflow:hidden;}
+.mock-chart-title{font-size:9px;color:rgba(255,255,255,0.4);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:10px;}
+.mock-bars{display:flex;align-items:flex-end;gap:6px;height:90px;}
+.mock-bar{
+  flex:1;border-radius:4px 4px 0 0;
+  background:linear-gradient(to top,#3b82f6,rgba(59,130,246,0.4));
+  animation:barGrow 1s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.mock-bar:nth-child(1){animation-delay:0.8s}
+.mock-bar:nth-child(2){animation-delay:0.9s}
+.mock-bar:nth-child(3){animation-delay:1.0s}
+.mock-bar:nth-child(4){animation-delay:1.1s}
+.mock-bar:nth-child(5){animation-delay:1.2s}
+.mock-bar:nth-child(6){animation-delay:1.3s}
+.mock-bar:nth-child(7){animation-delay:1.4s}
+@keyframes barGrow{from{transform:scaleY(0);transform-origin:bottom}to{transform:scaleY(1);transform-origin:bottom}}
+
+/* ══════════════════════════════
+   SCENE 4 — FEATURES SHOWCASE
+══════════════════════════════ */
+#s4{background:#060818;}
+.s4-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(16,185,129,0.07) 0%, transparent 70%);
+}
+.s4-content{position:relative;z-index:2;text-align:center;width:100%;}
+.s4-top-label{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:#10b981;
+  margin-bottom:16px;
+  animation:fadeUp 0.6s ease 0.2s both;
+}
+.s4-heading{
+  font-family:'Syne',sans-serif;
+  font-size:56px;font-weight:800;color:#fff;
+  animation:fadeUp 0.6s ease 0.35s both;
+}
+.s4-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  margin-top:48px;
+  padding:0 60px;
+}
+.s4-card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;padding:28px 24px;text-align:left;
+  position:relative;overflow:hidden;
+  animation:cardPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.s4-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(59,130,246,0.05),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.s4-card:nth-child(1){animation-delay:0.5s;border-top:2px solid #3b82f6;}
+.s4-card:nth-child(2){animation-delay:0.6s;border-top:2px solid #10b981;}
+.s4-card:nth-child(3){animation-delay:0.7s;border-top:2px solid #f59e0b;}
+.s4-card:nth-child(4){animation-delay:0.8s;border-top:2px solid #a855f7;}
+.s4-card:nth-child(5){animation-delay:0.9s;border-top:2px solid #ef4444;}
+.s4-card:nth-child(6){animation-delay:1.0s;border-top:2px solid #06b6d4;}
+@keyframes cardPop{from{transform:scale(0.8) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.s4-icon{font-size:32px;margin-bottom:14px;display:block;}
+.s4-card-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:8px;}
+.s4-card-desc{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:rgba(255,255,255,0.5);line-height:1.5;}
+
+/* ══════════════════════════════
+   SCENE 5 — SALES SLIP DEMO
+══════════════════════════════ */
+#s5{background:#060818;}
+.s5-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 60%),
+             radial-gradient(ellipse 40% 40% at 80% 50%, rgba(16,185,129,0.06) 0%, transparent 50%);
+}
+.s5-left{position:relative;z-index:2;flex:0 0 500px;padding-right:60px;}
+.s5-label{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:#3b82f6;
+  margin-bottom:16px;animation:fadeUp 0.6s ease 0.2s both;
+}
+.s5-heading{
+  font-family:'Syne',sans-serif;font-size:50px;font-weight:800;color:#fff;line-height:1.1;
+  animation:fadeUp 0.6s ease 0.35s both;
+}
+.s5-steps{margin-top:32px;}
+.s5-step{
+  display:flex;gap:16px;margin-bottom:20px;
+  animation:fadeUp 0.6s ease both;
+}
+.s5-step:nth-child(1){animation-delay:0.5s}
+.s5-step:nth-child(2){animation-delay:0.65s}
+.s5-step:nth-child(3){animation-delay:0.8s}
+.s5-step-num{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#fff;
+  flex-shrink:0;
+}
+.s5-step-text{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:rgba(255,255,255,0.7);line-height:1.5;}
+.s5-step-text strong{color:#fff;display:block;}
+
+/* Slip mockup */
+.s5-slip{
+  position:relative;z-index:2;flex:0 0 340px;
+  animation:mockupSlide 0.9s cubic-bezier(0.22,1,0.36,1) 0.4s both;
+}
+.slip-mock{
+  background:#1e293b;border:1px solid rgba(255,255,255,0.1);
+  border-radius:16px;padding:24px;
+  box-shadow:0 40px 80px rgba(0,0,0,0.5);
+}
+.slip-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:20px;padding-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.slip-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#f1f5f9;}
+.slip-badge{
+  background:rgba(16,185,129,0.15);color:#10b981;
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.slip-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  animation:fadeUp 0.5s ease both;
+}
+.slip-item:nth-child(1){animation-delay:0.7s}
+.slip-item:nth-child(2){animation-delay:0.85s}
+.slip-item:nth-child(3){animation-delay:1.0s}
+.slip-item-name{font-size:13px;color:rgba(255,255,255,0.8);}
+.slip-item-qty{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.slip-item-price{font-size:14px;font-weight:700;color:#10b981;}
+.slip-total{
+  display:flex;justify-content:space-between;
+  margin-top:16px;padding-top:16px;
+  border-top:1px solid rgba(255,255,255,0.1);
+}
+.slip-total-label{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#f1f5f9;}
+.slip-total-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#10b981;}
+.slip-btn{
+  width:100%;margin-top:16px;padding:12px;
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  border:none;border-radius:10px;
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;
+  cursor:pointer;
+  animation:fadeUp 0.5s ease 1.2s both;
+}
+
+/* ══════════════════════════════
+   SCENE 6 — STATS / NUMBERS
+══════════════════════════════ */
+#s6{background:#060818;}
+.s6-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 50% 60% at 20% 30%, rgba(59,130,246,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 80% 70%, rgba(16,185,129,0.1) 0%, transparent 50%);
+}
+.s6-content{position:relative;z-index:2;text-align:center;}
+.s6-label{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:#3b82f6;
+  margin-bottom:16px;animation:fadeUp 0.6s ease 0.2s both;
+}
+.s6-heading{
+  font-family:'Syne',sans-serif;font-size:56px;font-weight:800;color:#fff;
+  animation:fadeUp 0.6s ease 0.35s both;
+}
+.s6-nums{
+  display:flex;gap:60px;justify-content:center;
+  margin-top:60px;
+}
+.s6-num-card{text-align:center;animation:fadeUp 0.7s cubic-bezier(0.34,1.56,0.64,1) both;}
+.s6-num-card:nth-child(1){animation-delay:0.5s}
+.s6-num-card:nth-child(2){animation-delay:0.65s}
+.s6-num-card:nth-child(3){animation-delay:0.8s}
+.s6-num-card:nth-child(4){animation-delay:0.95s}
+.s6-big{
+  font-family:'Syne',sans-serif;font-size:72px;font-weight:800;
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;
+}
+.s6-unit{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;color:rgba(255,255,255,0.5);margin-top:8px;}
+.s6-divider{width:1px;background:rgba(255,255,255,0.08);align-self:stretch;}
+
+/* ══════════════════════════════
+   SCENE 7 — CTA FINALE
+══════════════════════════════ */
+#s7{background:#060818;}
+.s7-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 70% at 50% 50%, rgba(59,130,246,0.2) 0%, rgba(16,185,129,0.1) 40%, transparent 70%);
+  animation:breathe 4s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.s7-particles{position:absolute;inset:0;overflow:hidden;}
+.particle{
+  position:absolute;
+  width:4px;height:4px;border-radius:50%;
+  background:#3b82f6;opacity:0;
+  animation:particleFloat linear infinite;
+}
+.s7-content{position:relative;z-index:2;text-align:center;}
+.s7-logo{
+  width:80px;height:80px;
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  border-radius:22px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+  margin:0 auto 32px;
+  box-shadow:0 0 60px rgba(59,130,246,0.6);
+  animation:logoPop 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.3s both, logoFloat 3s ease-in-out 1s infinite;
+}
+.s7-heading{
+  font-family:'Syne',sans-serif;font-size:72px;font-weight:800;color:#fff;
+  line-height:1;
+  animation:fadeUp 0.8s ease 0.5s both;
+}
+.s7-heading .grad{
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.s7-sub{
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;
+  color:rgba(255,255,255,0.5);margin-top:16px;
+  animation:fadeUp 0.8s ease 0.7s both;
+}
+.s7-cta{
+  display:inline-flex;align-items:center;gap:12px;
+  margin-top:40px;
+  padding:18px 48px;
+  background:linear-gradient(135deg,#3b82f6,#10b981);
+  border:none;border-radius:16px;
+  font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;
+  cursor:pointer;
+  box-shadow:0 20px 60px rgba(59,130,246,0.4);
+  animation:fadeUp 0.8s ease 0.9s both;
+  text-decoration:none;
+}
+.s7-by{
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+  color:rgba(255,255,255,0.2);margin-top:48px;
+  animation:fadeUp 0.8s ease 1.1s both;
+}
+.s7-by a{color:rgba(255,255,255,0.3);text-decoration:none;}
+
+@keyframes particleFloat{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:0.6}
+  90%{opacity:0.3}
+  100%{transform:translateY(-100px) scale(1);opacity:0}
+}
+
+/* ── PROGRESS BAR ── */
+#progressBar{
+  position:fixed;bottom:0;left:0;height:3px;
+  background:linear-gradient(90deg,#3b82f6,#10b981);
+  transition:width 0.3s ease;z-index:1000;
+}
+
+/* ── SCENE LABEL ── */
+.scene-label{
+  position:fixed;top:20px;right:20px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;
+  color:rgba(255,255,255,0.2);letter-spacing:2px;z-index:1000;
+}
+.scene-dots{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:1000;
+}
+.scene-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  transition:all 0.3s;
+}
+.scene-dot.active{background:#3b82f6;width:20px;border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div id="progressBar" style="width:0%"></div>
+<div class="scene-label" id="sceneLabel">01 / 07</div>
+<div class="scene-dots" id="sceneDots"></div>
+
+<!-- ══ SCENE 1: INTRO ══ -->
+<div class="scene active" id="s1">
+  <div class="s1-bg"></div>
+  <div class="s1-grid"></div>
+  <div class="orbit"><div class="orbit-dot"></div></div>
+  <div class="orbit orbit2"><div class="orbit-dot"></div></div>
+  <div class="s1-center">
+    <div class="s1-logo-wrap">🏪</div>
+    <div class="s1-title"><span>Stockora</span></div>
+    <div class="s1-sub">Point of Sale System</div>
+    <div class="s1-tagline">Smart retail. Zero hassle. Complete control.</div>
+  </div>
+</div>
+
+<!-- ══ SCENE 2: PROBLEM ══ -->
+<div class="scene" id="s2">
+  <div class="s2-bg"></div>
+  <div class="s2-content">
+    <div class="s2-badge">The Problem</div>
+    <div class="s2-heading">Apna business manage karna<br>itna <span class="red">mushkil</span> kyun hai?</div>
+    <div class="s2-problems">
+      <div class="s2-prob">
+        <div class="prob-icon">📒</div>
+        <div class="prob-text"><strong>Manual Records</strong>Kaghaz per likha, baad mein kho gaya</div>
+      </div>
+      <div class="s2-prob">
+        <div class="prob-icon">📦</div>
+        <div class="prob-text"><strong>Stock Confusion</strong>Kya bikka, kya bacha — pata nahi</div>
+      </div>
+      <div class="s2-prob">
+        <div class="prob-icon">💸</div>
+        <div class="prob-text"><strong>Sale Ka Hisaab</strong>Din bhar ki kamai track nahi hoti</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCENE 3: DASHBOARD ══ -->
+<div class="scene" id="s3" style="display:flex;gap:0;padding:40px 60px;">
+  <div class="s3-bg"></div>
+  <div class="s3-left">
+    <div class="s3-label">The Solution</div>
+    <div class="s3-heading">Sab kuch ek<br><span class="grad">Dashboard</span><br>mein</div>
+    <div class="s3-features">
+      <div class="s3-feat"><div class="feat-dot blue">📊</div><div class="feat-text"><strong>Live Stats</strong> — Sales, expenses, stock ek jagah</div></div>
+      <div class="s3-feat"><div class="feat-dot green">📈</div><div class="feat-text"><strong>7-Day Chart</strong> — Sales trend at a glance</div></div>
+      <div class="s3-feat"><div class="feat-dot orange">📦</div><div class="feat-text"><strong>Product Grid</strong> — Ek click mein cart mein add</div></div>
+      <div class="s3-feat"><div class="feat-dot purple">🎨</div><div class="feat-text"><strong>Fully Customizable</strong> — Apna theme banao</div></div>
+    </div>
+  </div>
+  <div class="s3-mockup">
+    <div class="mock-window">
+      <div class="mock-titlebar">
+        <div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div>
+        <div class="mock-url">localhost/stk/index.php</div>
+      </div>
+      <div class="mock-body">
+        <div class="mock-sidebar">
+          <div class="mock-logo">
+            <div class="mock-logo-icon">🏪</div>
+            <div class="mock-logo-text">Stockora</div>
+          </div>
+          <div class="mock-nav">
+            <div class="mock-nav-item active">🏠 Dashboard</div>
+            <div class="mock-nav-item">🧾 Sales Slip</div>
+            <div class="mock-nav-item">📦 Products</div>
+            <div class="mock-nav-item">🏭 Inventory</div>
+            <div class="mock-nav-item">📊 Records</div>
+            <div class="mock-nav-item">💰 Expenses</div>
+          </div>
+        </div>
+        <div class="mock-main">
+          <div class="mock-stat-row">
+            <div class="mock-stat b"><div class="mock-stat-val">142</div><div class="mock-stat-lbl">Products</div></div>
+            <div class="mock-stat g"><div class="mock-stat-val">84.2k</div><div class="mock-stat-lbl">Total Sales</div></div>
+            <div class="mock-stat o"><div class="mock-stat-val">12.5k</div><div class="mock-stat-lbl">Today</div></div>
+            <div class="mock-stat r"><div class="mock-stat-val">8</div><div class="mock-stat-lbl">Low Stock</div></div>
+          </div>
+          <div class="mock-chart-area">
+            <div class="mock-chart-title">Sales — Last 7 Days</div>
+            <div class="mock-bars">
+              <div class="mock-bar" style="height:45%"></div>
+              <div class="mock-bar" style="height:70%"></div>
+              <div class="mock-bar" style="height:55%"></div>
+              <div class="mock-bar" style="height:85%"></div>
+              <div class="mock-bar" style="height:60%"></div>
+              <div class="mock-bar" style="height:95%"></div>
+              <div class="mock-bar" style="height:75%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCENE 4: FEATURES ══ -->
+<div class="scene" id="s4">
+  <div class="s4-bg"></div>
+  <div class="s4-content">
+    <div class="s4-top-label">Features</div>
+    <div class="s4-heading">Har zaroorat ka hal</div>
+    <div class="s4-grid">
+      <div class="s4-card"><span class="s4-icon">🧾</span><div class="s4-card-title">Sales Slip</div><div class="s4-card-desc">Barcode scan karo, cart mein add karo, receipt print karo — seconds mein</div></div>
+      <div class="s4-card"><span class="s4-icon">📦</span><div class="s4-card-title">Products & Stock</div><div class="s4-card-desc">Images ke saath products, auto barcode, stock tracking — sab automatic</div></div>
+      <div class="s4-card"><span class="s4-icon">💰</span><div class="s4-card-title">Expense Tracking</div><div class="s4-card-desc">Business ki har expense record karo, total ek jagah dekho</div></div>
+      <div class="s4-card"><span class="s4-icon">👥</span><div class="s4-card-title">Multi-User Roles</div><div class="s4-card-desc">Admin, Cashier, Viewer — har ek ka alag access level</div></div>
+      <div class="s4-card"><span class="s4-icon">🎨</span><div class="s4-card-title">Full Customization</div><div class="s4-card-desc">Logo, colors, fonts, sidebar — poora system apni marzi se design karo</div></div>
+      <div class="s4-card"><span class="s4-icon">📊</span><div class="s4-card-title">Sales Analytics</div><div class="s4-card-desc">7-day chart, customer history, WhatsApp integration — sab ek jagah</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCENE 5: SALES SLIP ══ -->
+<div class="scene" id="s5" style="display:flex;gap:0;padding:40px 80px;">
+  <div class="s5-bg"></div>
+  <div class="s5-left">
+    <div class="s5-label">Checkout</div>
+    <div class="s5-heading">Sale karo<br>3 steps<br>mein</div>
+    <div class="s5-steps">
+      <div class="s5-step">
+        <div class="s5-step-num">1</div>
+        <div class="s5-step-text"><strong>Product select karo</strong>Name search karo ya barcode scan karo</div>
+      </div>
+      <div class="s5-step">
+        <div class="s5-step-num">2</div>
+        <div class="s5-step-text"><strong>Cart mein add karo</strong>Multiple products, custom qty — sab easy</div>
+      </div>
+      <div class="s5-step">
+        <div class="s5-step-num">3</div>
+        <div class="s5-step-text"><strong>Checkout & Print</strong>Receipt auto print, stock auto update</div>
+      </div>
+    </div>
+  </div>
+  <div class="s5-slip">
+    <div class="slip-mock">
+      <div class="slip-header">
+        <div class="slip-title">🧾 Sales Slip</div>
+        <div class="slip-badge">Active Cart</div>
+      </div>
+      <div class="slip-item"><div><div class="slip-item-name">Nestle Milk 1L</div><div class="slip-item-qty">x2 units</div></div><div class="slip-item-price">Rs 320</div></div>
+      <div class="slip-item"><div><div class="slip-item-name">Colgate Toothpaste</div><div class="slip-item-qty">x1 unit</div></div><div class="slip-item-price">Rs 180</div></div>
+      <div class="slip-item"><div><div class="slip-item-name">Lays Chips (Large)</div><div class="slip-item-qty">x3 units</div></div><div class="slip-item-price">Rs 270</div></div>
+      <div class="slip-total">
+        <div class="slip-total-label">Total</div>
+        <div class="slip-total-val">Rs 770</div>
+      </div>
+      <button class="slip-btn">✅ Checkout & Print Receipt</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCENE 6: STATS ══ -->
+<div class="scene" id="s6">
+  <div class="s6-bg"></div>
+  <div class="s6-content">
+    <div class="s6-label">Why Stockora</div>
+    <div class="s6-heading">Numbers don't lie</div>
+    <div class="s6-nums">
+      <div class="s6-num-card">
+        <div class="s6-big" id="cnt1">0</div>
+        <div class="s6-unit">Pages & Modules</div>
+      </div>
+      <div class="s6-divider"></div>
+      <div class="s6-num-card">
+        <div class="s6-big" id="cnt2">0</div>
+        <div class="s6-unit">User Role Levels</div>
+      </div>
+      <div class="s6-divider"></div>
+      <div class="s6-num-card">
+        <div class="s6-big">∞</div>
+        <div class="s6-unit">Products Support</div>
+      </div>
+      <div class="s6-divider"></div>
+      <div class="s6-num-card">
+        <div class="s6-big">100%</div>
+        <div class="s6-unit">Pakistan Ready</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCENE 7: CTA ══ -->
+<div class="scene" id="s7">
+  <div class="s7-bg"></div>
+  <div class="s7-particles" id="particles"></div>
+  <div class="s7-content">
+    <div class="s7-logo">🏪</div>
+    <div class="s7-heading">Ab shuru karo<br>apna <span class="grad">Stockora</span></div>
+    <div class="s7-sub">Apni dukaan. Apna system. Apni marzi.</div>
+    <a class="s7-cta" href="#">🚀 Get Stockora Now</a>
+    <div class="s7-by">Powered by <a href="https://hexora.great-site.net">Hexora</a></div>
+  </div>
+</div>
+
+<script>
+const SCENES = 7;
+const DURATIONS = [3500, 4000, 5000, 5000, 5000, 4000, 6000]; // ms per scene
+let current = 0;
+let timer = null;
+let elapsed = 0;
+let startTime = null;
+let paused = false;
+
+// Build dots
+const dotsEl = document.getElementById('sceneDots');
+for(let i=0;i<SCENES;i++){
+  const d = document.createElement('div');
+  d.className='scene-dot'+(i===0?' active':'');
+  d.onclick = ()=>goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(idx){
+  document.querySelectorAll('.scene').forEach((s,i)=>{
+    s.classList.toggle('active', i===idx);
+  });
+  document.querySelectorAll('.scene-dot').forEach((d,i)=>{
+    d.classList.toggle('active', i===idx);
+  });
+  document.getElementById('sceneLabel').textContent =
+    String(idx+1).padStart(2,'0') + ' / ' + String(SCENES).padStart(2,'0');
+  current = idx;
+  elapsed = 0;
+  startTime = performance.now();
+  if(idx===5) startCounters();
+  if(idx===6) spawnParticles();
+}
+
+function next(){
+  goTo((current+1) % SCENES);
+}
+
+// Auto advance
+function tick(ts){
+  if(!startTime) startTime = ts;
+  if(!paused){
+    elapsed = ts - startTime;
+    const pct = Math.min(elapsed / DURATIONS[current] * 100, 100);
+
+    // total progress
+    const totalMs = DURATIONS.reduce((a,b)=>a+b,0);
+    const doneMs  = DURATIONS.slice(0,current).reduce((a,b)=>a+b,0) + elapsed;
+    document.getElementById('progressBar').style.width = Math.min(doneMs/totalMs*100,100)+'%';
+
+    if(elapsed >= DURATIONS[current]){
+      if(current < SCENES-1) next();
+      else {
+        // loop back
+        goTo(0);
+      }
+    }
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+// Click to advance, space to pause
+document.addEventListener('click', e=>{
+  if(e.target.closest('a')||e.target.closest('.scene-dot')) return;
+  next();
+});
+document.addEventListener('keydown', e=>{
+  if(e.code==='Space'){paused=!paused; e.preventDefault();}
+  if(e.code==='ArrowRight') next();
+  if(e.code==='ArrowLeft') goTo(Math.max(0,current-1));
+});
+
+// Counter animation for scene 6
+function startCounters(){
+  animCount('cnt1', 0, 15, 1200);
+  animCount('cnt2', 0, 3, 800);
+}
+function animCount(id, from, to, dur){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const start = performance.now();
+  function frame(ts){
+    const p = Math.min((ts-start)/dur, 1);
+    const ease = 1-Math.pow(1-p,3);
+    el.textContent = Math.round(from+(to-from)*ease);
+    if(p<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+// Particles for scene 7
+function spawnParticles(){
+  const container = document.getElementById('particles');
+  container.innerHTML = '';
+  const colors = ['#3b82f6','#10b981','#a855f7','#f59e0b'];
+  for(let i=0;i<40;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random()*100+'%';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.width = p.style.height = (Math.random()*4+2)+'px';
+    p.style.animationDuration = (Math.random()*4+3)+'s';
+    p.style.animationDelay = (Math.random()*3)+'s';
+    container.appendChild(p);
+  }
+}
+</script>
+</body>
+</html>
